@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    ggplot2 (>= 2.2.1),
+    ggplot2 (>= 2.2.0),
     grid (>= 3.4.2),
     gridExtra (>= 2.3),
     phyloseq (>= 1.22.3),
