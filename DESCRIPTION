@@ -1,0 +1,29 @@
+Package: mherit
+Type: Package
+Title: Heritability Calculations for Microbiome Amplicon Data
+Version: 0.1.0
+Authors@R: person("Daniel", "Sprockett", email = 
+                  "daniel.sprockett@stanford.edu", 
+                  role = c("aut", "cre"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: This R package is meant to facilitate calculating
+    heritability of 16S rRNA amplicon data. In addition, this 
+    package contains some functions for data preparation, 
+    normalization, and visualization.  
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    ggplot2 (>= 2.2.1),
+    grid (>= 3.4.2),
+    gridExtra (>= 2.3),
+    phyloseq (>= 1.22.3),
+    Hmisc (>= 4.0.3),
+    stats4 (>= 3.4.2),
+    mets (>= 1.2.5),
+    car (>= 3.0.2)
+RoxygenNote: 6.1.1
+Suggests: knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
