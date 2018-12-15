@@ -236,7 +236,5 @@ normalize_for_heritability <- function(ps, covariates = c(), normalization_plots
 }
 
 
-#
-
 
 

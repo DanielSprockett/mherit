@@ -96,5 +96,4 @@ plot_heritability <- function(df, cutoff, color, facet = TRUE, verbose = TRUE){
   return(p)
 }
 
-#
 

@@ -92,5 +92,4 @@ calculate_ACE <- function(ps, zygosity, dz, family_id, verbose = TRUE){
   return(ACE_tt)
 }
 
-#
 
