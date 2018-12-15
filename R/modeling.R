@@ -90,4 +90,7 @@ calculate_ACE <- function(ps, zygosity, dz, family_id, verbose = TRUE){
 
   if(verbose == TRUE){message(paste0("The data.frame output contains A.C.E. Estimates and Confidence Intervals for ", ntaxa(ps), " taxonomic features."))}
   return(ACE_tt)
-  }
+}
+
+#
+
