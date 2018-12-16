@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://danielsprockett.github.io/mherit//index.html</loc>
+  </url>
+  <url>
+    <loc>https://danielsprockett.github.io/mherit//reference/add_ranks.html</loc>
+  </url>
+  <url>
+    <loc>https://danielsprockett.github.io/mherit//reference/calculate_ACE.html</loc>
+  </url>
+  <url>
+    <loc>https://danielsprockett.github.io/mherit//reference/normalize_for_heritability.html</loc>
+  </url>
+  <url>
+    <loc>https://danielsprockett.github.io/mherit//reference/plot_heritability.html</loc>
+  </url>
+  <url>
+    <loc>https://danielsprockett.github.io/mherit//articles/mherit.html</loc>
+  </url>
+</urlset>

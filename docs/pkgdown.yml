@@ -3,4 +3,7 @@ pkgdown: 1.3.0
 pkgdown_sha: ~
 articles:
   mherit: mherit.html
+urls:
+  reference: https://danielsprockett.github.io/mherit//reference
+  article: https://danielsprockett.github.io/mherit//articles
 
