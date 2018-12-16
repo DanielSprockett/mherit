@@ -1,0 +1,168 @@
+---
+title: "mherit Vignette"
+author: "Daniel Sprockett"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mherit Vignette}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Load Pacakages
+
+Load Packages.
+
+```{r load packages, message=FALSE, warning=FALSE}
+
+require("ggplot2")
+require("phyloseq")
+require("car")
+require("mets")
+require("mherit")
+
+```
+
+## Import
+
+Import the phyloseq object.
+
+```{r import}
+
+ps <- readRDS("/Users/daniel/R_packages/mherit/data/twins_ps.rds")
+
+```
+
+## Subset
+
+Since some twins have mutliple samples, I'll first de-duplicate the subjects. In the future, this may be added to a function as an optional check (i.e. checking to make sure twins' samples were collected on the same day, etc.).
+
+```{r de-duplicate}
+
+samples_to_keep <- get_variable(ps, "Sample_ID")[!duplicated(get_variable(ps, "Subject_ID"))]
+ps <- subset_samples(ps, Sample_ID %in% samples_to_keep)
+
+```
+
+For the sake of speeding up this demonstration, next I'll select 400 twin pairs at random to focus on. 
+
+```{r subset}
+
+n <- 400
+set.seed(8675309)
+families_to_keep <- sample(unique(get_variable(ps, "Family_ID")), n)
+ps <- subset_samples(ps, Family_ID %in% families_to_keep)
+
+```
+
+## Filter
+
+Remove taxa not seen at least once in at least 50% of the samples.
+
+```{r filter}
+
+ps <- filter_taxa(ps, function(x) sum(x >= 1) > (0.50*length(x)), TRUE)
+ps
+
+```
+
+This leaves us with `r nsamples(ps)` samples and `r ntaxa(ps)` taxa.
+
+Lets check the how many MZ and DZ twins we are left with.
+
+```{r check zygosity}
+
+table(get_variable(ps, "Zygosity"))
+
+```
+
+Ok, not bad. 
+
+## Prepare Dataset
+
+Now I can use the `add_ranks()` function to add higher taxonomic levels to the phyloseq object. For now I'll just add the `Family` and `Genus` levels, but if you leave `ranks` empty, it'll use all of the ranks available in the `tax_table()`.
+
+```{r add_ranks}
+
+ps <- add_ranks(ps, ranks = c("Family", "Genus"))
+
+```
+
+You can see that there are now taxonomic features present in the dataset that are higher than ASVs. 
+
+```{r examine taxa names}
+
+sample(taxa_names(ps), 10)
+
+```
+
+## Normalize
+
+If we take a look at the abundances of the first 2 taxa in the fist 5 samples, we can see this is count data (integers).
+
+```{r pre-normalization}
+
+otu_table(ps)[1:5, 1:2]
+
+```
+
+To make the data more normally distributed, I'll use the `normalize_for_heritability()` function to perform the Box-Cox transformation and then regress on a few covariates in my `sample_data()`. Notice that `Height` is not in the `sample_data()`. The output phyloseq object contains the residuals from the linear regression. In this functions and all of the functions in this package, you can set `verbose = FALSE` to suppress the message. 
+
+```{r normalize_for_heritability}
+
+ps <- normalize_for_heritability(ps, covariates = c("Host_Age", "Host_Sex", "Height"), verbose = TRUE)
+
+```
+
+If you want, you can also add `normalization_plots = TRUE` and the function will output plots for each taxonomic feature showing the distribution before and after normalization. 
+
+Now if we check again, the data is no longer in count form. 
+
+```{r post-normalization}
+
+otu_table(ps)[1:5, 1:2]
+
+```
+
+## Calculate A.C.E.
+
+After I'm satisfied with the normalization, I can use the `calculate_ACE()` function to calculate the A.C.E. model. This function calls the [twinlm](https://www.rdocumentation.org/packages/mets/versions/1.2.3.1/topics/twinlm) function from the `mets` R package. We'll also set `verbose = FALSE` to supress the long list of taxa, like above. 
+
+```{r calculate_ACE}
+
+df <- calculate_ACE(ps, dz = "DZ", zygosity = "Zygosity", family_id = "Family_ID", verbose = FALSE)
+
+```
+
+The output is a data.frame that contains all of the estimates of A, C, and E, as well as their taxonomy.  
+
+```{r}
+
+head(df, 3)
+
+```
+
+
+## Plot
+
+Finally we can plot the results. 
+
+```{r plot, fig.width=10, fig.height=10}
+
+p <- plot_heritability(df, cutoff = 0.2, color = "Family", verbose = TRUE)
+p
+
+```
+
+Don't pay too much attention to the names of the taxa being displayed in this figure. There is a lot of data curation that needs to be done that I am not showing here.
+
+This is a work in progress, so please let me know if you run into any problems. Thank you!
